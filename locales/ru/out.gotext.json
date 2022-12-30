@@ -1,0 +1,54 @@
+{
+    "language": "ru",
+    "messages": [
+        {
+            "id": [
+                "numberSubsTmpl",
+                "You have {Lensubs} subscription(s)"
+            ],
+            "message": "You have {Lensubs} subscription(s)",
+            "translation": "Подписок {Lensubs}.",
+            "placeholders": [
+                {
+                    "id": "Lensubs",
+                    "string": "%[1]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 1,
+                    "expr": "len(*subs)"
+                }
+            ]
+        },
+        {
+            "id": "Location: {Longitude};{Latitude}. Last AQI: {String}",
+            "message": "Location: {Longitude};{Latitude}. Last AQI: {String}",
+            "translation": "Координаты: {Longitude};{Latitude}. Последний AQI: {String}",
+            "placeholders": [
+                {
+                    "id": "Longitude",
+                    "string": "%[1]f",
+                    "type": "float64",
+                    "underlyingType": "float64",
+                    "argNum": 1,
+                    "expr": "s.Longitude"
+                },
+                {
+                    "id": "Latitude",
+                    "string": "%[2]f",
+                    "type": "float64",
+                    "underlyingType": "float64",
+                    "argNum": 2,
+                    "expr": "s.Latitude"
+                },
+                {
+                    "id": "String",
+                    "string": "%[3]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 3,
+                    "expr": "s.AirQualityIndex.String()"
+                }
+            ]
+        }
+    ]
+}
