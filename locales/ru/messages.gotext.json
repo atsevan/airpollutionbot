@@ -38,7 +38,7 @@
                 "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot."
             ],
             "message": "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.",
-            "translation": ""
+            "translation": "/airQualityIndex - Индекс Качества Воздуха (AQI) для местоположения,\n/about      - информация о боте."
         },
         {
             "id": [
@@ -95,7 +95,7 @@
                 "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}"
             ],
             "message": "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}",
-            "translation": "Получите Индекс Качества Воздуха (AQI) для текущего местоположения.\nКонтакт: {AuthorContact}",
+            "translation": "Индекс Качества Воздуха (AQI) для текущего местоположения.\nКонтакт: {AuthorContact}",
             "placeholders": [
                 {
                     "id": "AuthorContact",
@@ -113,7 +113,7 @@
                 "Just share your location or try /start"
             ],
             "message": "Just share your location or try /start",
-            "translation": "Поделитесь своим местоположением или начните со /start"
+            "translation": "Поделитесь своим местоположением или начните с /start"
         },
         {
             "id": "Error: {Err}",
@@ -152,6 +152,30 @@
                     "expr": "v"
                 }
             ]
+        },
+        {
+            "id": [
+                "notifyMeDelText",
+                "OK. I won't notify you anymore"
+            ],
+            "message": "OK. I won't notify you anymore",
+            "translation": "Подписки удалены."
+        },
+        {
+            "id": [
+                "headMsg",
+                "😷 AQI gets worse"
+            ],
+            "message": "😷 AQI gets worse",
+            "translation": "😷 AQI ухудшился"
+        },
+        {
+            "id": [
+                "headMsg2",
+                "😌 AQI gets better"
+            ],
+            "message": "😌 AQI gets better",
+            "translation": "😌 AQI улучшился"
         }
     ]
 }

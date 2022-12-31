@@ -1,6 +1,6 @@
 package main
 
-//go:generate gotext -srclang=en update -lang=en,ru
+//go:generate gotext -srclang=en update -lang=en,ru -out=catalog.go
 
 import (
 	"database/sql"
@@ -181,7 +181,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 	}
 
 	msgText := []string{
-		p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi),
+		p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
 		"",
 		p.Sprintf(dp.Main.Aqi.Description()),
 	}
@@ -208,7 +208,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 
 func (bot *Bot) Send(tgMsg tgbotapi.MessageConfig) {
 	if _, err := bot.tApi.Send(tgMsg); err != nil {
-		log.Printf("failed to send a telegram message: ", err)
+		log.Print("failed to send a telegram message: ", err)
 	}
 }
 
@@ -312,8 +312,8 @@ func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 
 		var msgText []string
 		msgText = append(msgText,
-			detailsText,
-			time.Unix(dp.Dt, 0).String(),
+			p.Sprintf(detailsText),
+			p.Sprintf(time.Unix(dp.Dt, 0).String()),
 			"",
 		)
 		for k, v := range dp.Components {
@@ -324,9 +324,9 @@ func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 		err := bot.store.DeleteAQISubscriptions(chatID)
 		if err != nil {
 			log.Println("DeleteAQISubscriptions: ", err)
-			tgMsg.Text = p.Sprint(safeToRetryErrMsg)
+			tgMsg.Text = p.Sprintf(safeToRetryErrMsg)
 		}
-		tgMsg.Text = p.Sprint(notifyMeDelText)
+		tgMsg.Text = p.Sprintf(notifyMeDelText)
 	}
 
 	bot.Send(tgMsg)
@@ -377,11 +377,11 @@ func (bot *Bot) Cron() {
 			p := newLangPrinter(s.LanguageCode)
 
 			msgText := []string{
-				p.Sprint(headMsg),
+				p.Sprintf(headMsg),
 				"",
-				p.Sprint(aqiText) + ": " + p.Sprint(dp.Main.Aqi.String()),
+				p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
 				"",
-				p.Sprint(dp.Main.Aqi.Description()),
+				p.Sprintf(dp.Main.Aqi.Description()),
 			}
 
 			tgMsg := tgbotapi.NewMessage(s.ChatID, strings.Join(msgText, "\n"))

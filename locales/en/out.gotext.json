@@ -176,6 +176,26 @@
                 }
             ],
             "fuzzy": true
+        },
+        {
+            "id": [
+                "notifyMeDelText",
+                "OK. I won't notify you anymore"
+            ],
+            "message": "OK. I won't notify you anymore",
+            "translation": "OK. I won't notify you anymore",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "headMsg",
+                "😷 AQI gets worse"
+            ],
+            "message": "😷 AQI gets worse",
+            "translation": "😷 AQI gets worse",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
         }
     ]
 }
