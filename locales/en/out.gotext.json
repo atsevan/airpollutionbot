@@ -3,6 +3,57 @@
     "messages": [
         {
             "id": [
+                "safeToRetryErrMsg",
+                "Error! Please, retry!"
+            ],
+            "message": "Error! Please, retry!",
+            "translation": "Error! Please, retry!",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "aqiText",
+                "Air Quality Index"
+            ],
+            "message": "Air Quality Index",
+            "translation": "Air Quality Index",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Notify Me on AQI changes",
+            "message": "Notify Me on AQI changes",
+            "translation": "Notify Me on AQI changes",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Details",
+            "message": "Details",
+            "translation": "Details",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Share location!",
+            "message": "Share location!",
+            "translation": "Share location!",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "startMsg",
+                "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot."
+            ],
+            "message": "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.",
+            "translation": "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
                 "numberSubsTmpl",
                 "You have {Lensubs} subscription(s)"
             ],
@@ -50,6 +101,78 @@
                     "underlyingType": "string",
                     "argNum": 3,
                     "expr": "s.AirQualityIndex.String()"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "aboutTextTmpl",
+                "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}"
+            ],
+            "message": "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}",
+            "translation": "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "AuthorContact",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "authorContact"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "unknownCmdMsg",
+                "Just share your location or try /start"
+            ],
+            "message": "Just share your location or try /start",
+            "translation": "Just share your location or try /start",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Error: {Err}",
+            "message": "Error: {Err}",
+            "translation": "Error: {Err}",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "Err",
+                    "string": "%[1]v",
+                    "type": "error",
+                    "underlyingType": "interface{Error() string}",
+                    "argNum": 1,
+                    "expr": "err"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "{K}={V}",
+            "message": "{K}={V}",
+            "translation": "{K}={V}",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "K",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "k"
+                },
+                {
+                    "id": "V",
+                    "string": "%.2[2]f",
+                    "type": "float64",
+                    "underlyingType": "float64",
+                    "argNum": 2,
+                    "expr": "v"
                 }
             ],
             "fuzzy": true

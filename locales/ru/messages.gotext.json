@@ -3,6 +3,45 @@
     "messages": [
         {
             "id": [
+                "safeToRetryErrMsg",
+                "Error! Please, retry!"
+            ],
+            "message": "Error! Please, retry!",
+            "translation": "Ошибка! Пожлуйста, повторите запрос"
+        },
+        {
+            "id": [
+                "aqiText",
+                "Air Quality Index"
+            ],
+            "message": "Air Quality Index",
+            "translation": "Индекс Качества Воздуха (AQI)"
+        },
+        {
+            "id": "Notify Me on AQI changes",
+            "message": "Notify Me on AQI changes",
+            "translation": "Уведомлять меня об изменениях AQI"
+        },
+        {
+            "id": "Details",
+            "message": "Details",
+            "translation": "Детали"
+        },
+        {
+            "id": "Share location!",
+            "message": "Share location!",
+            "translation": "Оправить геопозицию"
+        },
+        {
+            "id": [
+                "startMsg",
+                "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot."
+            ],
+            "message": "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.",
+            "translation": ""
+        },
+        {
+            "id": [
                 "numberSubsTmpl",
                 "You have {Lensubs} subscription(s)"
             ],
@@ -51,9 +90,68 @@
             ]
         },
         {
-            "id": "Share location!",
-            "message": "Share location!",
-            "translation": "Оправить геопозицию"
+            "id": [
+                "aboutTextTmpl",
+                "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}"
+            ],
+            "message": "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}",
+            "translation": "Получите Индекс Качества Воздуха (AQI) для текущего местоположения.\nКонтакт: {AuthorContact}",
+            "placeholders": [
+                {
+                    "id": "AuthorContact",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "authorContact"
+                }
+            ]
+        },
+        {
+            "id": [
+                "unknownCmdMsg",
+                "Just share your location or try /start"
+            ],
+            "message": "Just share your location or try /start",
+            "translation": "Поделитесь своим местоположением или начните со /start"
+        },
+        {
+            "id": "Error: {Err}",
+            "message": "Error: {Err}",
+            "translation": "Ошибка: {Err}",
+            "placeholders": [
+                {
+                    "id": "Err",
+                    "string": "%[1]v",
+                    "type": "error",
+                    "underlyingType": "interface{Error() string}",
+                    "argNum": 1,
+                    "expr": "err"
+                }
+            ]
+        },
+        {
+            "id": "{K}={V}",
+            "message": "{K}={V}",
+            "translation": "",
+            "placeholders": [
+                {
+                    "id": "K",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "k"
+                },
+                {
+                    "id": "V",
+                    "string": "%.2[2]f",
+                    "type": "float64",
+                    "underlyingType": "float64",
+                    "argNum": 2,
+                    "expr": "v"
+                }
+            ]
         }
     ]
 }

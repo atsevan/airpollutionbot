@@ -4,7 +4,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -16,9 +15,10 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-var (
-	aboutText         = "Get the Air Quality Index (AQI) for the current location.\nContact: andrei+aqibot@tsevan.com"
-	startMsg          = "/airQuality - get the Air Quality Index for the location,\n/about      - into about the bot."
+const (
+	authorContact     = "andrei+aqibot@tsevan.com"
+	aboutTextTmpl     = "Get the Air Quality Index (AQI) for the current location.\nContact: %s"
+	startMsg          = "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot."
 	notifyMeCnfrmText = "OK. I will notify you if AQI changes in your location. /mySubsription"
 	cleanupNotifBtn   = "Cleanup AQI Subscriptions"
 	notifyMeDelText   = "OK. I won't notify you anymore"
@@ -28,7 +28,10 @@ var (
 	aqiGetsBetterMsg  = "😌 AQI gets better"
 	aqiText           = "Air Quality Index"
 	detailsText       = "Details"
+	unknownCmdMsg     = "Just share your location or try /start"
+)
 
+var (
 	keyboardCmds = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButtonLocation("/airQualityIndex")),
@@ -43,6 +46,15 @@ var (
 		),
 	)
 )
+
+func newLangPrinter(languageCode string) *message.Printer {
+	lang, err := language.Parse(languageCode)
+	if err != nil {
+		log.Println(err)
+		lang = language.English
+	}
+	return message.NewPrinter(lang)
+}
 
 type AQIProvider interface {
 	GetAirPollution(l *Location) (*ApiPollutionResponse, error)
@@ -133,11 +145,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 		}
 	)
 
-	lang, err := language.Parse(languageCode)
-	if err != nil {
-		log.Println(err)
-	}
-	p := message.NewPrinter(lang)
+	p := newLangPrinter(languageCode)
 
 	us := &UserSession{
 		ChatID:       chatID,
@@ -160,7 +168,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 		resp, err := bot.wAPI.GetAirPollution(location)
 		if err != nil {
 			log.Print("GetAirPollution: ", err)
-			bot.Send(tgbotapi.NewMessage(chatID, p.Sprint(safeToRetryErrMsg)))
+			bot.Send(tgbotapi.NewMessage(chatID, p.Sprintf(safeToRetryErrMsg)))
 			return
 		}
 		if err := bot.store.AddDataPoint(chatID, &resp.DP); err != nil {
@@ -173,9 +181,9 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 	}
 
 	msgText := []string{
-		p.Sprint(aqiText) + ": " + p.Sprint(dp.Main.Aqi),
+		p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi),
 		"",
-		p.Sprint(dp.Main.Aqi.Description()),
+		p.Sprintf(dp.Main.Aqi.Description()),
 	}
 
 	tgMsg := tgbotapi.NewMessage(chatID, strings.Join(msgText, "\n"))
@@ -184,13 +192,13 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 	tgMsg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(
-				p.Sprint("Notify Me on AQI changes"),
+				p.Sprintf("Notify Me on AQI changes"),
 				"notifyMe",
 			),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(
-				p.Sprint("Details"),
+				p.Sprintf("Details"),
 				"details",
 			),
 		),
@@ -200,7 +208,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 
 func (bot *Bot) Send(tgMsg tgbotapi.MessageConfig) {
 	if _, err := bot.tApi.Send(tgMsg); err != nil {
-		log.Print("failed to send a telegram message: ", err)
+		log.Printf("failed to send a telegram message: ", err)
 	}
 }
 
@@ -215,7 +223,7 @@ func (bot *Bot) handleMessage(msg *tgbotapi.Message) {
 		return
 	}
 
-	tgMsg := tgbotapi.NewMessage(msg.Chat.ID, "Just share your location or try /start")
+	tgMsg := tgbotapi.NewMessage(msg.Chat.ID, startMsg)
 	bot.Send(tgMsg)
 }
 
@@ -225,25 +233,21 @@ func (bot *Bot) handleCommand(msg *tgbotapi.Message) {
 		languageCode = msg.From.LanguageCode
 	)
 
-	lang, err := language.Parse(languageCode)
-	if err != nil {
-		log.Println(err)
-	}
-	p := message.NewPrinter(lang)
+	p := newLangPrinter(languageCode)
 
 	tgMsg := tgbotapi.NewMessage(chatID, "")
 	tgMsg.ReplyToMessageID = msg.MessageID
 
 	switch msg.Command() { // Extract the command from the Message.
 	case "airQualityIndex", "air":
-		tgMsg.Text = p.Sprint("Share location!")
+		tgMsg.Text = p.Sprintf("Share location!")
 		btn := tgbotapi.KeyboardButton{
 			RequestLocation: true,
-			Text:            p.Sprint("Share location!"),
+			Text:            p.Sprintf("Share location!"),
 		}
 		tgMsg.ReplyMarkup = tgbotapi.NewOneTimeReplyKeyboard([]tgbotapi.KeyboardButton{btn})
 	case "start":
-		tgMsg.Text = p.Sprint(startMsg)
+		tgMsg.Text = p.Sprintf(startMsg)
 		tgMsg.ReplyMarkup = keyboardCmds
 	case "mySubsription":
 		subs, err := bot.store.ListAQISubscriptions(chatID)
@@ -263,9 +267,9 @@ func (bot *Bot) handleCommand(msg *tgbotapi.Message) {
 
 		tgMsg.Text = strings.Join(msgText, "\n")
 	case "about":
-		tgMsg.Text = p.Sprint(aboutText)
+		tgMsg.Text = p.Sprintf(aboutTextTmpl, authorContact)
 	default:
-		tgMsg.Text = p.Sprint("Notify Me on AQI changes")
+		tgMsg.Text = p.Sprintf(unknownCmdMsg)
 		tgMsg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 	}
 	bot.Send(tgMsg)
@@ -273,8 +277,9 @@ func (bot *Bot) handleCommand(msg *tgbotapi.Message) {
 
 func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 	var (
-		chatID    = query.Message.Chat.ID
-		messageID = query.Message.MessageID
+		chatID       = query.Message.Chat.ID
+		messageID    = query.Message.MessageID
+		languageCode = query.Message.From.LanguageCode
 	)
 
 	// Respond to the callback query, telling Telegram to show the user
@@ -286,6 +291,7 @@ func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 	if _, err := bot.tApi.Request(callback); err != nil {
 		log.Panic(err)
 	}
+	p := newLangPrinter(languageCode)
 
 	tgMsg := tgbotapi.NewMessage(chatID, "")
 	tgMsg.ReplyToMessageID = messageID
@@ -296,7 +302,7 @@ func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 		err := bot.store.AddAQISubscription(chatID)
 		if err != nil {
 			log.Println("AddAQISubscription: ", err)
-			tgMsg.Text = fmt.Sprintf("Error: %v", err)
+			tgMsg.Text = p.Sprintf("Error: %v", err)
 		}
 	case "details":
 		dp, err := bot.store.GetLastPD(chatID)
@@ -311,18 +317,16 @@ func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 			"",
 		)
 		for k, v := range dp.Components {
-			msgText = append(msgText, fmt.Sprintf("%s=%.2f", k, v))
+			msgText = append(msgText, p.Sprintf("%s=%.2f", k, v))
 		}
 		tgMsg.Text = strings.Join(msgText, "\n")
 	case "cleanup":
 		err := bot.store.DeleteAQISubscriptions(chatID)
 		if err != nil {
 			log.Println("DeleteAQISubscriptions: ", err)
-			tgMsg.Text = safeToRetryErrMsg
+			tgMsg.Text = p.Sprint(safeToRetryErrMsg)
 		}
-		tgMsg.Text = notifyMeDelText
-	default:
-		tgMsg.Text = query.Data
+		tgMsg.Text = p.Sprint(notifyMeDelText)
 	}
 
 	bot.Send(tgMsg)
@@ -370,11 +374,7 @@ func (bot *Bot) Cron() {
 				headMsg = aqiGetsBetterMsg
 			}
 
-			lang, err := language.Parse(s.LanguageCode)
-			if err != nil {
-				log.Println(err)
-			}
-			p := message.NewPrinter(lang)
+			p := newLangPrinter(s.LanguageCode)
 
 			msgText := []string{
 				p.Sprint(headMsg),
