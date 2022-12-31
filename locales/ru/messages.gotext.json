@@ -34,19 +34,11 @@
         },
         {
             "id": [
-                "startMsg",
-                "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot."
-            ],
-            "message": "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.",
-            "translation": "/airQualityIndex - Индекс Качества Воздуха (AQI) для местоположения,\n/about      - информация о боте."
-        },
-        {
-            "id": [
                 "numberSubsTmpl",
                 "You have {Lensubs} subscription(s)"
             ],
             "message": "You have {Lensubs} subscription(s)",
-            "translation": "Подписок {Lensubs}.",
+            "translation": "Подписок: {Lensubs}.",
             "placeholders": [
                 {
                     "id": "Lensubs",
@@ -163,7 +155,6 @@
         },
         {
             "id": [
-                "headMsg",
                 "😷 AQI gets worse"
             ],
             "message": "😷 AQI gets worse",
@@ -171,11 +162,34 @@
         },
         {
             "id": [
-                "headMsg2",
                 "😌 AQI gets better"
             ],
             "message": "😌 AQI gets better",
             "translation": "😌 AQI улучшился"
+        },
+        {
+            "id": [
+                "helpAQICmdMsg",
+                "/airQualityIndex - get the Air Quality Index for the location"
+            ],
+            "message": "/airQualityIndex - get the Air Quality Index for the location",
+            "translation": "/airQualityIndex - Индекс Качества Воздуха (AQI) для местоположения"
+        },
+        {
+            "id": [
+                "helpSubsCmdMsg",
+                "/subsriptions - list of the active subsriptions"
+            ],
+            "message": "/subsriptions - list of the active subsriptions",
+            "translation": "/subsriptions - активные подписки"
+        },
+        {
+            "id": [
+                "helpAboutCmdMsg",
+                "/about - into about the bot"
+            ],
+            "message": "/about - into about the bot",
+            "translation": "/about - информация о боте"
         }
     ]
 }

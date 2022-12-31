@@ -18,8 +18,10 @@ import (
 const (
 	authorContact     = "andrei+aqibot@tsevan.com"
 	aboutTextTmpl     = "Get the Air Quality Index (AQI) for the current location.\nContact: %s"
-	startMsg          = "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot."
-	notifyMeCnfrmText = "OK. I will notify you if AQI changes in your location. /mySubsription"
+	helpAQICmdMsg     = "/airQualityIndex - get the Air Quality Index for the location"
+	helpSubsCmdMsg    = "/subsriptions - list of the active subsriptions"
+	helpAboutCmdMsg   = "/about - into about the bot"
+	notifyMeCnfrmText = "OK. I will notify you if AQI changes in your location. /subsriptions"
 	cleanupNotifBtn   = "Cleanup AQI Subscriptions"
 	notifyMeDelText   = "OK. I won't notify you anymore"
 	safeToRetryErrMsg = "Error! Please, retry!"
@@ -36,7 +38,7 @@ var (
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButtonLocation("/airQualityIndex")),
 		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("/mySubsription"),
+			tgbotapi.NewKeyboardButton("/subsriptions"),
 			tgbotapi.NewKeyboardButton("/about"),
 		),
 	)
@@ -45,14 +47,23 @@ var (
 			tgbotapi.NewInlineKeyboardButtonData(cleanupNotifBtn, "cleanup"),
 		),
 	)
+
+	aqiDescription = [...]string{
+		"No health implications.",
+		"Some pollutants may slightly affect very few hypersensitive individuals.",
+		"Healthy people may experience slight irritations and sensitive individuals will be slightly affected to a larger extent.",
+		"Sensitive individuals will experience more serious conditions. The hearts and respiratory systems of healthy people may be affected.",
+		"Healthy people will commonly show symptoms. People with respiratory or heart diseases will be significantly affected and will experience reduced endurance in activities.",
+	}
 )
 
 func newLangPrinter(languageCode string) *message.Printer {
 	lang, err := language.Parse(languageCode)
 	if err != nil {
-		log.Println(err)
+		log.Print("newLangPrinter: ", err)
 		lang = language.English
 	}
+	log.Print("message.Printer: lang ", lang)
 	return message.NewPrinter(lang)
 }
 
@@ -183,7 +194,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 	msgText := []string{
 		p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
 		"",
-		p.Sprintf(dp.Main.Aqi.Description()),
+		p.Sprintf(aqiDescription[dp.Main.Aqi-1]),
 	}
 
 	tgMsg := tgbotapi.NewMessage(chatID, strings.Join(msgText, "\n"))
@@ -198,7 +209,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(
-				p.Sprintf("Details"),
+				p.Sprintf(detailsText),
 				"details",
 			),
 		),
@@ -223,7 +234,13 @@ func (bot *Bot) handleMessage(msg *tgbotapi.Message) {
 		return
 	}
 
-	tgMsg := tgbotapi.NewMessage(msg.Chat.ID, startMsg)
+	p := newLangPrinter(msg.From.LanguageCode)
+	msgText := []string{
+		p.Sprintf(helpAQICmdMsg),
+		p.Sprintf(helpSubsCmdMsg),
+		p.Sprintf(helpAboutCmdMsg),
+	}
+	tgMsg := tgbotapi.NewMessage(msg.Chat.ID, strings.Join(msgText, "\n"))
 	bot.Send(tgMsg)
 }
 
@@ -247,9 +264,14 @@ func (bot *Bot) handleCommand(msg *tgbotapi.Message) {
 		}
 		tgMsg.ReplyMarkup = tgbotapi.NewOneTimeReplyKeyboard([]tgbotapi.KeyboardButton{btn})
 	case "start":
-		tgMsg.Text = p.Sprintf(startMsg)
+		msgText := []string{
+			p.Sprintf(helpAQICmdMsg),
+			p.Sprintf(helpSubsCmdMsg),
+			p.Sprintf(helpAboutCmdMsg),
+		}
+		tgMsg.Text = strings.Join(msgText, "\n")
 		tgMsg.ReplyMarkup = keyboardCmds
-	case "mySubsription":
+	case "subsriptions":
 		subs, err := bot.store.ListAQISubscriptions(chatID)
 		if err != nil {
 			log.Print("ListAQISubscriptions", err)
@@ -259,8 +281,11 @@ func (bot *Bot) handleCommand(msg *tgbotapi.Message) {
 
 		if len(*subs) > 0 {
 			for _, s := range *subs {
-				msgText = append(msgText, p.Sprintf("Location: %f;%f. Last AQI: %s",
-					s.Longitude, s.Latitude, s.AirQualityIndex.String()))
+				msgText = append(msgText,
+					p.Sprintf("Location: %f;%f. Last AQI: %s", s.Longitude, s.Latitude,
+						p.Sprintf(s.AirQualityIndex.String()),
+					),
+				)
 			}
 			tgMsg.ReplyMarkup = cleanupSubscriptionInline
 		}
@@ -369,19 +394,24 @@ func (bot *Bot) Cron() {
 				continue
 			}
 
-			headMsg := aqiGetsWorseMsg
-			if dp.GetAQI() < s.AirQualityIndex {
-				headMsg = aqiGetsBetterMsg
-			}
-
 			p := newLangPrinter(s.LanguageCode)
 
-			msgText := []string{
-				p.Sprintf(headMsg),
+			var msgText []string
+			msgText = []string{
+				p.Sprintf(aqiGetsBetterMsg),
 				"",
 				p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
 				"",
-				p.Sprintf(dp.Main.Aqi.Description()),
+				p.Sprintf(aqiDescription[dp.Main.Aqi-1]),
+			}
+			if dp.GetAQI() > s.AirQualityIndex {
+				msgText = []string{
+					p.Sprintf(aqiGetsWorseMsg),
+					"",
+					p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
+					"",
+					p.Sprintf(aqiDescription[dp.Main.Aqi-1]),
+				}
 			}
 
 			tgMsg := tgbotapi.NewMessage(s.ChatID, strings.Join(msgText, "\n"))

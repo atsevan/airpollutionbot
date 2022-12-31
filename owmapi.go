@@ -79,7 +79,7 @@ type Location struct {
 type AirQualityIndex int
 
 func (aqi AirQualityIndex) String() string {
-	return [...]string{"Good 😁", "Fair 😅", "Moderate 😞", "Poor 😨", "Very Poor 😱"}[aqi-1]
+	return [...]string{"🟩 (Good)", "🟨 (Fair)", "🟧 (Moderate)", "🟥 (Poor)", "⬛ (Very Poor)"}[aqi-1]
 }
 
 // Description returns a longer description of the Air Quality Index level

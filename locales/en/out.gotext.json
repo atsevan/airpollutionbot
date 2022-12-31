@@ -29,9 +29,42 @@
             "fuzzy": true
         },
         {
-            "id": "Details",
+            "id": [
+                "detailsText",
+                "Details"
+            ],
             "message": "Details",
             "translation": "Details",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "helpAQICmdMsg",
+                "/airQualityIndex - get the Air Quality Index for the location"
+            ],
+            "message": "/airQualityIndex - get the Air Quality Index for the location",
+            "translation": "/airQualityIndex - get the Air Quality Index for the location",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "helpSubsCmdMsg",
+                "/subsriptions - list of the active subsriptions"
+            ],
+            "message": "/subsriptions - list of the active subsriptions",
+            "translation": "/subsriptions - list of the active subsriptions",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "helpAboutCmdMsg",
+                "/about - into about the bot"
+            ],
+            "message": "/about - into about the bot",
+            "translation": "/about - into about the bot",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -39,16 +72,6 @@
             "id": "Share location!",
             "message": "Share location!",
             "translation": "Share location!",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": [
-                "startMsg",
-                "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot."
-            ],
-            "message": "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.",
-            "translation": "/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -100,7 +123,7 @@
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 3,
-                    "expr": "s.AirQualityIndex.String()"
+                    "expr": "p.Sprintf(s.AirQualityIndex.String())"
                 }
             ],
             "fuzzy": true
@@ -189,7 +212,17 @@
         },
         {
             "id": [
-                "headMsg",
+                "aqiGetsBetterMsg",
+                "😌 AQI gets better"
+            ],
+            "message": "😌 AQI gets better",
+            "translation": "😌 AQI gets better",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": [
+                "aqiGetsWorseMsg",
                 "😷 AQI gets worse"
             ],
             "message": "😷 AQI gets worse",

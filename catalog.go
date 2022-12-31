@@ -39,55 +39,59 @@ func init() {
 }
 
 var messageKeyToIndex = map[string]int{
-	"%s=%.2f": 11,
-	"/airQualityIndex - get the Air Quality Index for the location,\n/about      - into about the bot.": 5,
+	"%s=%.2f":                     13,
+	"/about - into about the bot": 6,
+	"/airQualityIndex - get the Air Quality Index for the location": 4,
+	"/subsriptions - list of the active subsriptions":               5,
 	"Air Quality Index":     1,
 	"Details":               3,
 	"Error! Please, retry!": 0,
-	"Error: %v":             10,
-	"Get the Air Quality Index (AQI) for the current location.\nContact: %s": 8,
-	"Just share your location or try /start":                                 9,
-	"Location: %f;%f. Last AQI: %s":                                          7,
+	"Error: %v":             12,
+	"Get the Air Quality Index (AQI) for the current location.\nContact: %s": 10,
+	"Just share your location or try /start":                                 11,
+	"Location: %f;%f. Last AQI: %s":                                          9,
 	"Notify Me on AQI changes":                                               2,
-	"OK. I won't notify you anymore":                                         12,
-	"Share location!":                                                        4,
-	"You have %d subscription(s)":                                            6,
-	"😌 AQI gets better":                                                      14,
-	"😷 AQI gets worse":                                                       13,
+	"OK. I won't notify you anymore":                                         14,
+	"Share location!":                                                        7,
+	"You have %d subscription(s)":                                            8,
+	"😌 AQI gets better":                                                      15,
+	"😷 AQI gets worse":                                                       16,
 }
 
-var enIndex = []uint32{ // 16 elements
+var enIndex = []uint32{ // 18 elements
 	0x00000000, 0x00000016, 0x00000028, 0x00000041,
-	0x00000049, 0x00000059, 0x000000ba, 0x000000d9,
-	0x00000100, 0x00000149, 0x00000170, 0x0000017d,
-	0x0000018b, 0x000001aa, 0x000001be, 0x000001d2,
-} // Size: 88 bytes
+	0x00000049, 0x00000087, 0x000000b7, 0x000000d3,
+	0x000000e3, 0x00000102, 0x00000129, 0x00000172,
+	0x00000199, 0x000001a6, 0x000001b4, 0x000001d3,
+	0x000001e8, 0x000001fc,
+} // Size: 96 bytes
 
-const enData string = "" + // Size: 466 bytes
+const enData string = "" + // Size: 508 bytes
 	"\x02Error! Please, retry!\x02Air Quality Index\x02Notify Me on AQI chang" +
-	"es\x02Details\x02Share location!\x02/airQualityIndex - get the Air Quali" +
-	"ty Index for the location,\x0a/about      - into about the bot.\x02You h" +
-	"ave %[1]d subscription(s)\x02Location: %[1]f;%[2]f. Last AQI: %[3]s\x02G" +
-	"et the Air Quality Index (AQI) for the current location.\x0aContact: %[1" +
-	"]s\x02Just share your location or try /start\x02Error: %[1]v\x02%[1]s=%." +
-	"2[2]f\x02OK. I won't notify you anymore\x02😷 AQI gets worse\x02😷 AQI get" +
-	"s worse"
+	"es\x02Details\x02/airQualityIndex - get the Air Quality Index for the lo" +
+	"cation\x02/subsriptions - list of the active subsriptions\x02/about - in" +
+	"to about the bot\x02Share location!\x02You have %[1]d subscription(s)" +
+	"\x02Location: %[1]f;%[2]f. Last AQI: %[3]s\x02Get the Air Quality Index " +
+	"(AQI) for the current location.\x0aContact: %[1]s\x02Just share your loc" +
+	"ation or try /start\x02Error: %[1]v\x02%[1]s=%.2[2]f\x02OK. I won't noti" +
+	"fy you anymore\x02😌 AQI gets better\x02😷 AQI gets worse"
 
-var ruIndex = []uint32{ // 16 elements
+var ruIndex = []uint32{ // 18 elements
 	0x00000000, 0x00000042, 0x00000075, 0x000000b1,
-	0x000000be, 0x000000e4, 0x0000017f, 0x00000197,
-	0x000001d8, 0x00000257, 0x000002b6, 0x000002ca,
-	0x000002ca, 0x000002eb, 0x00000307, 0x00000323,
-} // Size: 88 bytes
+	0x000000be, 0x00000128, 0x0000015a, 0x00000184,
+	0x000001aa, 0x000001c3, 0x00000204, 0x00000283,
+	0x000002e2, 0x000002f6, 0x000002f6, 0x00000317,
+	0x00000333, 0x0000034f,
+} // Size: 96 bytes
 
-const ruData string = "" + // Size: 803 bytes
+const ruData string = "" + // Size: 847 bytes
 	"\x02Ошибка! Пожлуйста, повторите запрос\x02Индекс Качества Воздуха (AQI)" +
-	"\x02Уведомлять меня об изменениях AQI\x02Детали\x02Оправить геопозицию" +
-	"\x02/airQualityIndex - Индекс Качества Воздуха (AQI) для местоположения," +
-	"\x0a/about      - информация о боте.\x02Подписок %[1]d.\x02Координаты: %" +
-	"[1]f;%[2]f. Последний AQI: %[3]s\x02Индекс Качества Воздуха (AQI) для те" +
-	"кущего местоположения.\x0aКонтакт: %[1]s\x02Поделитесь своим местополож" +
-	"ением или начните с /start\x02Ошибка: %[1]v\x02Подписки удалены.\x02😷 A" +
-	"QI ухудшился\x02😷 AQI ухудшился"
+	"\x02Уведомлять меня об изменениях AQI\x02Детали\x02/airQualityIndex - Ин" +
+	"декс Качества Воздуха (AQI) для местоположения\x02/subsriptions - актив" +
+	"ные подписки\x02/about - информация о боте\x02Оправить геопозицию\x02По" +
+	"дписок: %[1]d.\x02Координаты: %[1]f;%[2]f. Последний AQI: %[3]s\x02Инде" +
+	"кс Качества Воздуха (AQI) для текущего местоположения.\x0aКонтакт: %[1]" +
+	"s\x02Поделитесь своим местоположением или начните с /start\x02Ошибка: %[" +
+	"1]v\x02Подписки удалены.\x02😌 AQI улучшился\x02😷 AQI ухудшился"
 
-	// Total table size 1445 bytes (1KiB); checksum: 232B4B33
+	// Total table size 1547 bytes (1KiB); checksum: 3F68A961
