@@ -357,6 +357,7 @@ func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 	bot.Send(tgMsg)
 }
 
+// Cron runs every 30 minutes and checks the AQI for all enabled subscriptions.
 func (bot *Bot) Cron() {
 	subs, err := bot.store.ListEnabledSubscriptions()
 	if err != nil {

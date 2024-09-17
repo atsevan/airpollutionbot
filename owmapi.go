@@ -102,6 +102,7 @@ type DataPoint struct {
 	Components map[string]float64 `json:"components"` // Components keeps concentration of each component in μg/m3
 }
 
+// GetAQI returns the AirQualityIndex for the DataPoint
 func (dp *DataPoint) GetAQI() AirQualityIndex {
 	return dp.Main.Aqi
 }

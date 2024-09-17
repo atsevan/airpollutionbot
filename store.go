@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS "subscription" (
 // ErrNotificationExists is returted on attempt to add an existing location
 var ErrNotificationExists = errors.New("location is already subscribed")
 
+// UserSession represents a user session
 type UserSession struct {
 	UserID       int64
 	ChatID       int64
