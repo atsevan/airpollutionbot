@@ -16,7 +16,7 @@ To use the Air Pollution Telegram Bot, follow these steps:
 1. Install Telegram on your device if you haven't already.
 2. Open t.me/AirPollution_Bot or search for the "Air Pollution Bot" in the Telegram app.
 3. Start a conversation with the bot and share your location.
-4. Create a subsription and get real-time AQI updates to be informed about air pollution in your area!
+4. Create a subsription and get AQI updates to be informed about air pollution in your area!
 
 ## Contributing
 
