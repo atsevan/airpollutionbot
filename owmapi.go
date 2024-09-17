@@ -11,6 +11,23 @@ import (
 // OWMApiEndpoint is an base apiEndpoint
 const OWMApiEndpoint = "http://api.openweathermap.org/data/2.5/"
 
+var (
+	aqiDesc = map[AirQualityIndex]string{
+		1: "🟩 (Good)",
+		2: "🟨 (Fair)",
+		3: "🟧 (Moderate)",
+		4: "🟥 (Poor)",
+		5: "⬛ (Very Poor)",
+	}
+	aqiDescription = map[AirQualityIndex]string{
+		1: "No health implications.",
+		2: "Some pollutants may slightly affect very few hypersensitive individuals.",
+		3: "Healthy people may experience slight irritations and sensitive individuals will be slightly affected to a larger extent.",
+		4: "Sensitive individuals will experience more serious conditions. The hearts and respiratory systems of healthy people may be affected.",
+		5: "Healthy people will commonly show symptoms. People with respiratory or heart diseases will be significantly affected and will experience reduced endurance in activities.",
+	}
+)
+
 // HTTPClient is the type needed for the bot to perform HTTP requests.
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
@@ -79,18 +96,12 @@ type Location struct {
 type AirQualityIndex int
 
 func (aqi AirQualityIndex) String() string {
-	return [...]string{"🟩 (Good)", "🟨 (Fair)", "🟧 (Moderate)", "🟥 (Poor)", "⬛ (Very Poor)"}[aqi-1]
+	return aqiDesc[aqi]
 }
 
 // Description returns a longer description of the Air Quality Index level
 func (aqi AirQualityIndex) Description() string {
-	return [...]string{
-		"No health implications.",
-		"Some pollutants may slightly affect very few hypersensitive individuals.",
-		"Healthy people may experience slight irritations and sensitive individuals will be slightly affected to a larger extent.",
-		"Sensitive individuals will experience more serious conditions. The hearts and respiratory systems of healthy people may be affected.",
-		"Healthy people will commonly show symptoms. People with respiratory or heart diseases will be significantly affected and will experience reduced endurance in activities.",
-	}[aqi-1]
+	return aqiDescription[aqi]
 }
 
 // DataPoint keeps the AirPollutionIndex measurement

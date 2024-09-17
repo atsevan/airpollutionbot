@@ -1,12 +1,12 @@
 package main
 
-//go:generate gotext -srclang=en update -lang=en,ru -out=catalog.go
-
 import (
 	"database/sql"
 	"log"
 	"strings"
 	"time"
+
+	_ "github.com/atsevan/airpollutionbot/translations"
 
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -47,14 +47,6 @@ var (
 			tgbotapi.NewInlineKeyboardButtonData(cleanupNotifBtn, "cleanup"),
 		),
 	)
-
-	aqiDescription = [...]string{
-		"No health implications.",
-		"Some pollutants may slightly affect very few hypersensitive individuals.",
-		"Healthy people may experience slight irritations and sensitive individuals will be slightly affected to a larger extent.",
-		"Sensitive individuals will experience more serious conditions. The hearts and respiratory systems of healthy people may be affected.",
-		"Healthy people will commonly show symptoms. People with respiratory or heart diseases will be significantly affected and will experience reduced endurance in activities.",
-	}
 )
 
 func newLangPrinter(languageCode string) *message.Printer {
@@ -194,7 +186,7 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 	msgText := []string{
 		p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
 		"",
-		p.Sprintf(aqiDescription[dp.Main.Aqi-1]),
+		p.Sprintf(dp.Main.Aqi.Description()),
 	}
 
 	tgMsg := tgbotapi.NewMessage(chatID, strings.Join(msgText, "\n"))
@@ -403,7 +395,7 @@ func (bot *Bot) Cron() {
 				"",
 				p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
 				"",
-				p.Sprintf(aqiDescription[dp.Main.Aqi-1]),
+				p.Sprintf(dp.Main.Aqi.Description()),
 			}
 			if dp.GetAQI() > s.AirQualityIndex {
 				msgText = []string{
@@ -411,7 +403,7 @@ func (bot *Bot) Cron() {
 					"",
 					p.Sprintf(aqiText) + ": " + p.Sprintf(dp.Main.Aqi.String()),
 					"",
-					p.Sprintf(aqiDescription[dp.Main.Aqi-1]),
+					p.Sprintf(dp.Main.Aqi.Description()),
 				}
 			}
 

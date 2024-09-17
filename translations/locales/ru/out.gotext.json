@@ -1,0 +1,200 @@
+{
+    "language": "ru",
+    "messages": [
+        {
+            "id": [
+                "safeToRetryErrMsg",
+                "Error! Please, retry!"
+            ],
+            "message": "Error! Please, retry!",
+            "translation": "Ошибка! Пожлуйста, повторите запрос"
+        },
+        {
+            "id": [
+                "aqiText",
+                "Air Quality Index"
+            ],
+            "message": "Air Quality Index",
+            "translation": "Индекс Качества Воздуха (AQI)"
+        },
+        {
+            "id": "Notify Me on AQI changes",
+            "message": "Notify Me on AQI changes",
+            "translation": "Уведомлять меня об изменениях AQI"
+        },
+        {
+            "id": [
+                "detailsText",
+                "Details"
+            ],
+            "message": "Details",
+            "translation": "Детали"
+        },
+        {
+            "id": [
+                "helpAQICmdMsg",
+                "/airQualityIndex - get the Air Quality Index for the location"
+            ],
+            "message": "/airQualityIndex - get the Air Quality Index for the location",
+            "translation": "/airQualityIndex - Индекс Качества Воздуха (AQI) для местоположения"
+        },
+        {
+            "id": [
+                "helpSubsCmdMsg",
+                "/subsriptions - list of the active subsriptions"
+            ],
+            "message": "/subsriptions - list of the active subsriptions",
+            "translation": "/subsriptions - активные подписки"
+        },
+        {
+            "id": [
+                "helpAboutCmdMsg",
+                "/about - into about the bot"
+            ],
+            "message": "/about - into about the bot",
+            "translation": "/about - информация о боте"
+        },
+        {
+            "id": "Share location!",
+            "message": "Share location!",
+            "translation": "Оправить геопозицию"
+        },
+        {
+            "id": [
+                "numberSubsTmpl",
+                "You have {Lensubs} subscription(s)"
+            ],
+            "message": "You have {Lensubs} subscription(s)",
+            "translation": "Подписок: {Lensubs}.",
+            "placeholders": [
+                {
+                    "id": "Lensubs",
+                    "string": "%[1]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 1,
+                    "expr": "len(*subs)"
+                }
+            ]
+        },
+        {
+            "id": "Location: {Longitude};{Latitude}. Last AQI: {String}",
+            "message": "Location: {Longitude};{Latitude}. Last AQI: {String}",
+            "translation": "Координаты: {Longitude};{Latitude}. Последний AQI: {String}",
+            "placeholders": [
+                {
+                    "id": "Longitude",
+                    "string": "%[1]f",
+                    "type": "float64",
+                    "underlyingType": "float64",
+                    "argNum": 1,
+                    "expr": "s.Longitude"
+                },
+                {
+                    "id": "Latitude",
+                    "string": "%[2]f",
+                    "type": "float64",
+                    "underlyingType": "float64",
+                    "argNum": 2,
+                    "expr": "s.Latitude"
+                },
+                {
+                    "id": "String",
+                    "string": "%[3]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 3,
+                    "expr": "p.Sprintf(s.AirQualityIndex.String())"
+                }
+            ]
+        },
+        {
+            "id": [
+                "aboutTextTmpl",
+                "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}"
+            ],
+            "message": "Get the Air Quality Index (AQI) for the current location.\nContact: {AuthorContact}",
+            "translation": "Индекс Качества Воздуха (AQI) для текущего местоположения.\nКонтакт: {AuthorContact}",
+            "placeholders": [
+                {
+                    "id": "AuthorContact",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "authorContact"
+                }
+            ]
+        },
+        {
+            "id": [
+                "unknownCmdMsg",
+                "Just share your location or try /start"
+            ],
+            "message": "Just share your location or try /start",
+            "translation": "Поделитесь своим местоположением или начните с /start"
+        },
+        {
+            "id": "Error: {Err}",
+            "message": "Error: {Err}",
+            "translation": "Ошибка: {Err}",
+            "placeholders": [
+                {
+                    "id": "Err",
+                    "string": "%[1]v",
+                    "type": "error",
+                    "underlyingType": "interface{Error() string}",
+                    "argNum": 1,
+                    "expr": "err"
+                }
+            ]
+        },
+        {
+            "id": "{K}={V}",
+            "message": "{K}={V}",
+            "translation": "{K}={V}",
+            "placeholders": [
+                {
+                    "id": "K",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "k"
+                },
+                {
+                    "id": "V",
+                    "string": "%.2[2]f",
+                    "type": "float64",
+                    "underlyingType": "float64",
+                    "argNum": 2,
+                    "expr": "v"
+                }
+            ]
+        },
+        {
+            "id": [
+                "notifyMeDelText",
+                "OK. I won't notify you anymore"
+            ],
+            "message": "OK. I won't notify you anymore",
+            "translation": "Подписки удалены."
+        },
+        {
+            "id": [
+                "aqiGetsBetterMsg",
+                "😌 AQI gets better"
+            ],
+            "message": "😌 AQI gets better",
+            "translation": "😌 AQI улучшился"
+        },
+        {
+            "id": [
+                "aqiGetsWorseMsg",
+                "😷 AQI gets worse"
+            ],
+            "message": "😷 AQI gets worse",
+            "translation": "😷 AQI ухудшился"
+        }
+    ]
+}
