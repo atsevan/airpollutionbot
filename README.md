@@ -5,7 +5,6 @@ This is a Telegram bot that notifies users when the Air Quality Index (AQI) chan
 ## Features
 
 - Real-time AQI updates: The bot continuously monitors the AQI and sends notifications to users whenever there is a change.
-- Customizable notifications: Users can choose the specific AQI thresholds they want to be notified about.
 - Location-based tracking: The bot can track the AQI of multiple locations and provide personalized notifications based on user preferences.
 - User-friendly interface: The bot provides a simple and intuitive interface for users to interact with and manage their notification settings.
 
