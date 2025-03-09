@@ -13,6 +13,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const dataPointRetentionPeriod = "-12 hour"
+
 var sqlSchema = `
 CREATE TABLE IF NOT EXISTS "user_session" (
 	"chatid" INTEGER PRIMARY KEY,
@@ -243,11 +245,23 @@ func (s *Store) ClenupAQISubscriptions() error {
 	return nil
 }
 
-// ClenupDataPoint deletes DataPoints older than 12 hours
-func (s *Store) ClenupDataPoint() error {
-	_, err := s.DB.Exec("DELETE data_point WHERE created_at <= datetime('now', '-12 hour')")
+// ClenupDataPoint deletes DataPoints older than the retention period
+func (s *Store) ClenupDataPoint() (int64, error) {
+	stmt, err := s.DB.Prepare("DELETE FROM data_point WHERE created_at <= datetime('now', ?)")
 	if err != nil {
-		return err
+		return 0, fmt.Errorf("preparing cleanup statement: %w", err)
 	}
-	return nil
+	defer stmt.Close()
+
+	result, err := stmt.Exec(dataPointRetentionPeriod)
+	if err != nil {
+		return 0, fmt.Errorf("executing cleanup statement: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("getting rows affected: %w", err)
+	}
+
+	return rowsAffected, nil
 }

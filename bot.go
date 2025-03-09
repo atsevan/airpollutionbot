@@ -427,9 +427,14 @@ func (bot *Bot) Cron() {
 func (bot *Bot) CronCleanup() {
 	err := bot.store.ClenupAQISubscriptions()
 	if err != nil {
-		log.Println("CronCleanup:", err)
-		return
+		log.Println("CronCleanup error:", err)
 	}
+
+	rowsAffected, err := bot.store.ClenupDataPoint()
+	if err != nil {
+		log.Println("CronCleanup error:", err)
+	}
+	log.Printf("Deleted %d data points", rowsAffected)
 
 	log.Println("CronCleanup complete")
 }
