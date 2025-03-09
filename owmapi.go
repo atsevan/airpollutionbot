@@ -33,20 +33,20 @@ type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-// OpenWheatherMapApi keeps the infromation for openweathermap.org API communication
-type OpenWheatherMapApi struct {
+// OpenWheatherMapAPI keeps the infromation for openweathermap.org API communication
+type OpenWheatherMapAPI struct {
 	token       string
 	httpClient  HTTPClient
 	Debug       bool
 	apiEndpoint string
 }
 
-// NewOpenWheatherMapApi creates a new clinet for OpenWheatherMapApi
-func NewOpenWheatherMapApi(token string) (*OpenWheatherMapApi, error) {
-	return &OpenWheatherMapApi{token, &http.Client{}, false, OWMApiEndpoint}, nil
+// NewOpenWheatherMapAPI creates a new clinet for OpenWheatherMapApi
+func NewOpenWheatherMapAPI(token string) (*OpenWheatherMapAPI, error) {
+	return &OpenWheatherMapAPI{token, &http.Client{}, false, OWMApiEndpoint}, nil
 }
 
-func (owma *OpenWheatherMapApi) makeRequest(path string) ([]byte, error) {
+func (owma *OpenWheatherMapAPI) makeRequest(path string) ([]byte, error) {
 	url := fmt.Sprintf("%s/%s&appid=%s", owma.apiEndpoint, path, owma.token)
 	if owma.Debug {
 		log.Printf("air_pollution url: %q", url)
@@ -69,16 +69,16 @@ func (owma *OpenWheatherMapApi) makeRequest(path string) ([]byte, error) {
 
 // GetAirPollution gets the current information about air pollution for the coordintes.
 // returns ApiPollutionResponse or Error
-func (owma *OpenWheatherMapApi) GetAirPollution(l *Location) (*ApiPollutionResponse, error) {
+func (owma *OpenWheatherMapAPI) GetAirPollution(l *Location) (*APIPollutionResponse, error) {
 	path := fmt.Sprintf("air_pollution?lat=%f&lon=%f", l.Latitude, l.Longitude)
 	data, err := owma.makeRequest(path)
 	if err != nil {
-		return &ApiPollutionResponse{}, err
+		return &APIPollutionResponse{}, err
 	}
-	var apiResp ApiPollutionResponse
+	var apiResp APIPollutionResponse
 	err = json.Unmarshal(data, &apiResp)
 	if err != nil {
-		return &ApiPollutionResponse{}, err
+		return &APIPollutionResponse{}, err
 	}
 	if owma.Debug {
 		log.Printf("air_pollution response: %v", &apiResp)
@@ -118,9 +118,9 @@ func (dp *DataPoint) GetAQI() AirQualityIndex {
 	return dp.Main.Aqi
 }
 
-// ApiPollutionResponse contains the infromation about AirQualityIndex and components for a location
+// APIPollutionResponse contains the infromation about AirQualityIndex and components for a location
 // see https://openweathermap.org/api/air-pollution#fields
-type ApiPollutionResponse struct {
+type APIPollutionResponse struct {
 	Location Location    `json:"coord"`
 	DP       []DataPoint `json:"list"`
 }

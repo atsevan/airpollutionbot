@@ -1,3 +1,4 @@
+// store.go
 package main
 
 import (
@@ -67,6 +68,7 @@ type Store struct {
 	CacheTime time.Duration
 }
 
+// Init creates tables in a DB
 func (s *Store) Init() error {
 	_, err := s.DB.Exec(sqlSchema)
 	if err != nil {
@@ -142,7 +144,7 @@ type AQISubscription struct {
 	AirQualityIndex
 }
 
-// AddNotification gathers the latest data for the chatID and create a new AQISubscription record
+// AddAQISubscription get the latest UserSession for the chatID and create a new AQISubscription record
 func (s *Store) AddAQISubscription(chatID int64) error {
 	us, err := s.GetSessionByChatID(chatID)
 	if err != nil {

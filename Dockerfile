@@ -1,48 +1,37 @@
-# Start from the official Golang image
+# Use the official Golang image as the base image
 FROM golang:1.24-alpine AS builder
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy go.mod and go.sum files to download dependencies
+# Install necessary build tools
+RUN apk add --no-cache git gcc musl-dev
+
+# Copy go mod and sum files
 COPY go.mod go.sum ./
 
-# Download dependencies
+# Download all dependencies
 RUN go mod download
 
 # Copy the source code into the container
 COPY . .
 
+# Run tests before building the application
+RUN go test ./...
+
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o airpollutionbot .
+RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o airpollutionbot .
 
-# Use a minimal alpine image for the final stage
-FROM alpine:3.19
+# Use a smaller base image for the final stage
+FROM alpine:latest
 
-# Install ca-certificates for HTTPS requests
-RUN apk --no-cache add ca-certificates
-
-# Create a non-root user and group
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-# Create and set permissions for app directory
-WORKDIR /app
-RUN chown -R appuser:appgroup /app
-
+# Set the working directory
+WORKDIR /root/
 # Copy the binary from the builder stage
 COPY --from=builder /app/airpollutionbot .
 
-# Copy any additional configuration files if needed
-# COPY --from=builder /app/config.yaml .
+# Expose port 8080
+EXPOSE 8080
 
-# Set ownership of all files to the non-root user
-RUN chown -R appuser:appgroup /app
-
-# Switch to non-root user
-USER appuser
-
-# Expose any necessary ports (if your bot needs to expose a port)
-# EXPOSE 8080
-
-# Command to run the executable
+# Run the application
 CMD ["./airpollutionbot"]

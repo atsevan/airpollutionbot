@@ -1,3 +1,6 @@
+// bot.go contains the main Bot struct and its methods for handling Telegram bot interactions
+// related to Air Quality Index (AQI) information and subscriptions.
+
 package main
 
 import (
@@ -59,25 +62,27 @@ func newLangPrinter(languageCode string) *message.Printer {
 	return message.NewPrinter(lang)
 }
 
+// AQIProvider is an interface for getting air pollution data.
 type AQIProvider interface {
-	GetAirPollution(l *Location) (*ApiPollutionResponse, error)
+	GetAirPollution(l *Location) (*APIPollutionResponse, error)
 }
 
+// Bot is a Telegram bot for getting air pollution data.
 type Bot struct {
-	tApi  *tgbotapi.BotAPI
+	tAPI  *tgbotapi.BotAPI
 	store *Store
 	wAPI  AQIProvider
 }
 
 // NewBot creates a PollutionBot. Returns Bot and cleanUp() function.
-func NewBot(telegramAPIToken, owmApiToken string, debug bool) (*Bot, func()) {
+func NewBot(telegramAPIToken, owmAPIToken, dbPath string, debug bool) (*Bot, func()) {
 
 	botapi, err := tgbotapi.NewBotAPI(telegramAPIToken)
 	if err != nil {
 		log.Panic("failed to create a tgbotapi client:", err)
 	}
 
-	owmapi, err := NewOpenWheatherMapApi(owmApiToken)
+	owmapi, err := NewOpenWheatherMapAPI(owmAPIToken)
 	if err != nil {
 		log.Panic("failed to create an openwhethermapapi client:", err)
 	}
@@ -87,7 +92,7 @@ func NewBot(telegramAPIToken, owmApiToken string, debug bool) (*Bot, func()) {
 		owmapi.Debug = true
 	}
 
-	db, err := sql.Open("sqlite3", "./airpollutionbot.db")
+	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		log.Panic("creating DB client: ", err)
 	}
@@ -101,7 +106,7 @@ func NewBot(telegramAPIToken, owmApiToken string, debug bool) (*Bot, func()) {
 	}
 
 	bot := &Bot{
-		tApi:  botapi,
+		tAPI:  botapi,
 		store: store,
 		wAPI:  owmapi,
 	}
@@ -117,7 +122,7 @@ func NewBot(telegramAPIToken, owmApiToken string, debug bool) (*Bot, func()) {
 func (bot *Bot) Run() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-	updates := bot.tApi.GetUpdatesChan(u)
+	updates := bot.tAPI.GetUpdatesChan(u)
 
 	for update := range updates {
 		go bot.handleUpdate(update)
@@ -209,8 +214,9 @@ func (bot *Bot) handleLocationMessage(msg *tgbotapi.Message) {
 	bot.Send(tgMsg)
 }
 
+// Send a message to the user with the details of the air quality index
 func (bot *Bot) Send(tgMsg tgbotapi.MessageConfig) {
-	if _, err := bot.tApi.Send(tgMsg); err != nil {
+	if _, err := bot.tAPI.Send(tgMsg); err != nil {
 		log.Print("failed to send a telegram message: ", err)
 	}
 }
@@ -305,7 +311,7 @@ func (bot *Bot) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 		query.ID,
 		query.Data,
 	)
-	if _, err := bot.tApi.Request(callback); err != nil {
+	if _, err := bot.tAPI.Request(callback); err != nil {
 		log.Panic(err)
 	}
 	p := newLangPrinter(languageCode)
@@ -417,6 +423,7 @@ func (bot *Bot) Cron() {
 	log.Printf("Sent %d messages", i)
 }
 
+// CronCleanup cleans up old subscriptions
 func (bot *Bot) CronCleanup() {
 	err := bot.store.ClenupAQISubscriptions()
 	if err != nil {

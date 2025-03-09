@@ -8,6 +8,10 @@ import (
 	"github.com/robfig/cron"
 )
 
+const (
+	defaultDBPath = "./airpollutionbot.db"
+)
+
 var dFlag = flag.Bool("debug", false, "increase verbosity")
 
 func getEnvVarOrPanic(key string) string {
@@ -21,10 +25,14 @@ func getEnvVarOrPanic(key string) string {
 func main() {
 	flag.Parse()
 
-	botApiToken := getEnvVarOrPanic("TELEGRAM_API_TOKEN")
-	owmApiToken := getEnvVarOrPanic("OWM_API_TOKEN")
+	botAPIToken := getEnvVarOrPanic("TELEGRAM_API_TOKEN")
+	owmAPIToken := getEnvVarOrPanic("OWM_API_TOKEN")
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		dbPath = defaultDBPath
+	}
 
-	bot, cancel := NewBot(botApiToken, owmApiToken, *dFlag)
+	bot, cancel := NewBot(botAPIToken, owmAPIToken, dbPath, *dFlag)
 
 	defer cancel()
 	c := cron.New()
