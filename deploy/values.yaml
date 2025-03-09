@@ -1,0 +1,7 @@
+image:
+  tag: "main"
+  pullPolicy: Always
+
+
+telegramBot:
+  existingSecret: "airpollution-bot-token"

@@ -17,13 +17,6 @@ To use the Air Pollution Telegram Bot, follow these steps:
 3. Start a conversation with the bot and share your location.
 4. Create a subsription and get AQI updates to be informed about air pollution in your area!
 
-## Contributing
-
-Contributions are welcome! If you have any ideas, bug reports, or feature requests, please open an issue on the GitHub repository.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ## Translation
 How to Modify the messages.gotext.json File for a Specific Language (e.g., Belarusian):
@@ -51,14 +44,18 @@ docker run -e TELEGRAM_API_TOKEN=<your_telegram_token> -e OWM_API_TOKEN=<your_op
 
 Replace `<your_telegram_token>` and `<your_openweathermap_token>` with your actual Telegram bot token and OpenWeatherMap API token, respectively.
 
+## Deployment to Kubernetes
+
+To deploy the application, follow these steps:
+```
+kubectl create secret generic airpollution-bot-token -n airpollutionbot --from-literal=token=<your_telegram_token> --from-literal=owmToken=<your_openweathermap_token>
+helm upgrade --install airpollutionbot dist/helm/airpollutionbot -f deploy/values.yaml -n airpollutionbot --create-namespace --set telegramBot.existingSecret=airpollution-bot-token
+```
+
 ## Contributing
 
 Contributions are welcome! If you have any ideas, bug reports, or feature requests, please open an issue on the GitHub repository.
 
-## Contact
-
-If you have any questions or need further assistance, feel free to reach out to the project maintainers.
-
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more information.
+This project is licensed under the [MIT License](LICENSE).

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "telegram-bot.fullname" . }}
+  labels:
+    {{- include "telegram-bot.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "telegram-bot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "telegram-bot.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TELEGRAM_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.telegramBot.existingSecret }}{{ .Values.telegramBot.existingSecret }}{{ else }} {{ include "telegram-bot.fullname" . }}{{ end }}
+                  key: token
+            - name: OWM_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.telegramBot.existingSecret }}{{ .Values.telegramBot.existingSecret }}{{ else }} {{ include "telegram-bot.fullname" . }}{{ end }}
+                  key: owmToken
+            - name: WEBHOOK_ENABLED
+              value: "{{ .Values.telegramBot.webhookEnabled }}"
+            {{- if .Values.telegramBot.webhookEnabled }}
+            - name: WEBHOOK_URL
+              value: "{{ .Values.telegramBot.webhookUrl }}"
+            {{- end }}
+            {{- if .Values.telegramBot.polling.enabled }}
+            - name: POLLING_ENABLED
+              value: "true"
+            - name: POLLING_INTERVAL
+              value: "{{ .Values.telegramBot.polling.interval }}"
+            {{- end }}
+            {{- if .Values.persistence.enabled }}
+            - name: DB_PATH
+              value: "{{ .Values.persistence.mountPath }}/database.sqlite"
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.persistence.mountPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
+          {{- end }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "telegram-bot.fullname" . }}
+      {{- end }}

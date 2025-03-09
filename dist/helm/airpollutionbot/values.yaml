@@ -1,0 +1,55 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/atsevan/airpollutionbot
+  pullPolicy: IfNotPresent
+  tag: "main"
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+telegramBot:
+  # Secret configuration
+  existingSecret: ""  # Set this to use an existing secret instead of creating one
+
+  # Create a new secret if existingSecret is not provided
+  token: ""
+  owmToken: ""
+
+  # Other bot-specific configurations
+  webhookEnabled: false
+  webhookUrl: ""
+  polling:
+    enabled: true
+    interval: 1
+
+# SQLite persistent storage configuration
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 100Mi
+  mountPath: /app/data
+  subPath: ""
