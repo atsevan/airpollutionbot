@@ -38,3 +38,27 @@ Update the translations:
 go install golang.org/x/text/cmd/gotext@latest
 go generate translations/translations.go
 ```
+
+## Docker
+
+To build and run the Docker image, use the following commands:
+```
+
+docker build -t airpollutionbot .
+docker run -e TELEGRAM_API_TOKEN=<your_telegram_token> -e OWM_API_TOKEN=<your_openweathermap_token> airpollutionbot
+
+```
+
+Replace `<your_telegram_token>` and `<your_openweathermap_token>` with your actual Telegram bot token and OpenWeatherMap API token, respectively.
+
+## Contributing
+
+Contributions are welcome! If you have any ideas, bug reports, or feature requests, please open an issue on the GitHub repository.
+
+## Contact
+
+If you have any questions or need further assistance, feel free to reach out to the project maintainers.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more information.
